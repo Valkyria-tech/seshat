@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seshat - PDF Viewer</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js" defer></script>
+    <script src="js/main.js" charset="utf-8" defer></script>
+
+  </head>
+  <body>
+    <div id="viewer">
+      <div id="canvas_container">
+        <canvas id="pdf_renderer"></canvas>
+      </div>
+    </div>
+
+    <div class="navigation-controls">
+      <button id="previousBtn">Previous</button>
+      <input id="currentPage" value="1" type="number" inputmode="numeric"/>
+      <button id="nextBtn">Next</button>
+    </div>
+    <div class="zoom-controls">
+      <button id="zoomIn">+</button>
+      <button id="zoomOut">-</button>
+    </div>
+
+  </body>
+</html>
