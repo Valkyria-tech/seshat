@@ -4,6 +4,8 @@ var pdfState = {
   zoom: 1
 }
 
+var rendering = false;
+
 function docReady(fn) {
   // see if DOM is already available
   if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -25,9 +27,15 @@ function render() {
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
+    rendering = true;
     page.render({
       canvasContext: ctx,
       viewport: viewport
+    }).then(function () {
+      rendering = false;
+    }).catch(function(error){
+      console.log('Error :: ' + error);
+      rendering = false;
     });
 
   });
@@ -90,5 +98,27 @@ docReady(function() {
       pdfState.zoom -= 0.5;
       render();
     });
+
+  let lastVerticalScroll = 0;
+  window.addEventListener('wheel', function(e){
+
+    let delta = e.deltaY;
+    let zoomValue = delta / 100;
+
+    console.log(pdfState.zoom + zoomValue);
+
+    if((pdfState.zoom + zoomValue) > 0.5 && (pdfState.zoom + zoomValue) < 2.0)
+      pdfState.zoom += zoomValue;
+      if(!rendering)
+        render();
+
+    if (delta < 0) {
+      //scroll up
+    } else {
+      //scroll down
+    }
+
+    return false;
+  });
 
 });
