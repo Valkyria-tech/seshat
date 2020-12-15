@@ -13,16 +13,6 @@
  * limitations under the License.
  */
 
-
-
-// ==================== A SOLUÇÂO TA AQUI =======================
-
-// pdfSinglePageViewer.currentPageNumber
-
-// ========================================================================
-
-
-
 "use strict";
 
 if (!pdfjsLib.getDocument || !pdfjsViewer.PDFSinglePageViewer) {
@@ -34,7 +24,7 @@ if (!pdfjsLib.getDocument || !pdfjsViewer.PDFSinglePageViewer) {
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js";
 
-var DEFAULT_URL = "http://192.168.0.49/seshat/content/frankenstein.pdf";
+var DEFAULT_URL = "content/frankenstein.pdf";
 var SEARCH_FOR = ""; // try 'Mozilla';
 
 var container = document.getElementById("viewerContainer");
@@ -80,4 +70,13 @@ loadingTask.promise.then(function (pdfDocument) {
   pdfSinglePageViewer.setDocument(pdfDocument);
 
   pdfLinkService.setDocument(pdfDocument, null);
+
+  // current and total page labels
+  document.getElementById('currentPageLabel').innerHTML = pdfSinglePageViewer.currentPageNumber;
+  document.getElementById('totalPagesLabel').innerHTML = pdfSinglePageViewer.pdfDocument.numPages;
+
+  pdfSinglePageViewer.eventBus.on('pagechanging', function pagechange(e) {
+    document.getElementById('currentPageLabel').innerHTML = e.pageNumber;
+  });
+
 });
