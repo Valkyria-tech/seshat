@@ -2,6 +2,10 @@ html {
   scroll-behavior: smooth;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 .container {
   width: 80%;
   margin: 0 auto;
@@ -48,7 +52,7 @@ html {
     width: 90%;
   }
     .container #viewer {
-      height: 35rem;
+      height: 25rem;
     }
     .container .controlls {
       flex-direction: column;

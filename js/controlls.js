@@ -29,7 +29,7 @@ docReady(function() {
         pdfSinglePageViewer.currentPageNumber += 1;
     });
 
-  //========== SCROLL CONTROLLS ==========
+  //========== ZOOM / SCROLL CONTROLLS ==========
 
   if(document.getElementById('zoomIn'))
     document.getElementById('zoomIn').addEventListener('click', function(){
@@ -44,6 +44,9 @@ docReady(function() {
 
   viewer.addEventListener('wheel', function(e){
 
+    // block window scroll
+    document.querySelector('body').classList.add('no-scroll');
+
     let delta = e.deltaY;
     let zoomValue = 0.05;
 
@@ -54,7 +57,25 @@ docReady(function() {
         pdfSinglePageViewer.currentScale -= zoomValue;
     }
 
+    // reset window scroll
+    setTimeout(function(){
+      document.querySelector('body').classList.remove('no-scroll');
+    }, 2000);
+
     return false;
+  });
+
+  var hammertime = new Hammer(viewer, { touchAction: 'pan-x pan-y' });
+  hammertime.get('pinch').set({enable: true});
+  hammertime.get('pan').set({enable: true});
+
+  hammertime.on("pinchin", function(e) {
+    if(pdfSinglePageViewer.currentScale - 0.02 >= 0.15)
+      pdfSinglePageViewer.currentScale -= 0.02;
+  });
+
+  hammertime.on("pinchout", function(e) {
+    pdfSinglePageViewer.currentScale += 0.02;
   });
 
   //========== DRAG CONTROLL ==========
