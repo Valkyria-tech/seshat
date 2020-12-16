@@ -15,6 +15,22 @@ docReady(function() {
     const viewer = document.getElementById('viewer');
   }
 
+  var renderingStateTimer = setInterval(function() {
+    if(pdfSinglePageViewer._pages[0]) {
+      if(pdfSinglePageViewer._pages[0].renderingState === 3) {
+
+        // page front controller
+        let url = new URL(window.location.href);
+        let searchParams = new URLSearchParams(url.search);
+        let page = Number(searchParams.get('page'));
+        if(page != null)
+          pdfSinglePageViewer.currentPageNumber = page;
+
+        clearInterval(renderingStateTimer);
+      }
+    }
+  }, 10);
+
   //========== CONTROLLS ==========
 
   if(document.getElementById('previousBtn'))
@@ -33,13 +49,19 @@ docReady(function() {
 
   if(document.getElementById('zoomIn'))
     document.getElementById('zoomIn').addEventListener('click', function(){
-      pdfSinglePageViewer.currentScale += 0.25;
+      pdfSinglePageViewer.currentScale += 0.1;
     });
 
   if(document.getElementById('zoomOut'))
     document.getElementById('zoomOut').addEventListener('click', function(){
-      if(pdfSinglePageViewer.currentScale - 0.25 >= 0.15)
-        pdfSinglePageViewer.currentScale -= 0.25;
+      if(pdfSinglePageViewer.currentScale - 0.1 >= 0.15)
+        pdfSinglePageViewer.currentScale -= 0.1;
+    });
+
+  if(document.getElementById('fullscreen'))
+    document.getElementById('fullscreen').addEventListener('click', function(){
+      document.getElementById('viewerContainer').classList.toggle('fullscreen');
+      document.getElementById('controlls').classList.toggle('controlls-fullscreen');
     });
 
   viewer.addEventListener('wheel', function(e){

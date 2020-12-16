@@ -77,6 +77,11 @@ loadingTask.promise.then(function (pdfDocument) {
 
   pdfSinglePageViewer.eventBus.on('pagechanging', function pagechange(e) {
     document.getElementById('currentPageLabel').innerHTML = e.pageNumber;
+
+    // update query param
+    let url = new URL(window.location.href);
+    url.searchParams.set('page', e.pageNumber);
+    window.history.pushState('', '', url.href);
   });
 
 });
