@@ -1,3 +1,5 @@
+var LAST_QUERY = '';
+
 function docReady(fn) {
   // see if DOM is already available
   if (document.readyState === "complete" || document.readyState === "interactive") {
@@ -5,6 +7,42 @@ function docReady(fn) {
     setTimeout(fn, 1);
   } else {
     document.addEventListener("DOMContentLoaded", fn);
+  }
+}
+
+function search(query) {
+  LAST_QUERY = query;
+
+  pdfFindController.executeCommand('find', {
+    query: query,
+    caseSensitive: false,
+    findPrevious: undefined,
+    highlightAll: true,
+    phraseSearch: true
+  });
+}
+
+function searchNext() {
+  // navigate to next result page
+  for (let i = (pdfSinglePageViewer.currentPageNumber); i < pdfFindController._pageMatches.length; i++) {
+    if(pdfFindController._pageMatches[i].length > 0) {
+      let nextPageIndex = (i + 1);
+      pdfSinglePageViewer.currentPageNumber = nextPageIndex;
+      break;
+    }
+  }
+}
+
+function searchPrevious() {
+  // navigate to previous result page
+  for (let i = (pdfSinglePageViewer.currentPageNumber - 1); i >= 0; i--) {
+    if(pdfFindController._pageMatches[i].length > 0) {
+      if(pdfSinglePageViewer.currentPageNumber != (i + 1)) {
+        let nextPageIndex = (i + 1);
+        pdfSinglePageViewer.currentPageNumber = nextPageIndex;
+        break;
+      }
+    }
   }
 }
 
@@ -23,7 +61,7 @@ docReady(function() {
         let url = new URL(window.location.href);
         let searchParams = new URLSearchParams(url.search);
         let page = Number(searchParams.get('page'));
-        if(page != null)
+        if(page != null && page != 0)
           pdfSinglePageViewer.currentPageNumber = page;
 
         clearInterval(renderingStateTimer);
@@ -44,6 +82,48 @@ docReady(function() {
       if(pdfSinglePageViewer.currentPageNumber + 1 <= pdfSinglePageViewer.pdfDocument.numPages)
         pdfSinglePageViewer.currentPageNumber += 1;
     });
+
+  //========== SEARCH ==========
+
+  if(document.getElementById('searchTxt')) {
+
+    let searchTxt = document.getElementById('searchTxt');
+
+    searchTxt.addEventListener('change', function() {
+
+      search(this.value);
+
+    });
+
+    searchTxt.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        if(LAST_QUERY == searchTxt.value) {
+          searchNext();
+        }
+      }
+    });
+
+    document.getElementById('searchBtn').addEventListener('click', function() {
+      if(searchTxt.value != null && searchTxt.value != '') {
+        search(searchTxt.value);
+      } else {
+        searchTxt.focus();
+      }
+    });
+
+    document.getElementById('searchNext').addEventListener('click', function(){
+      if(LAST_QUERY == searchTxt.value) {
+        searchNext();
+      }
+    });
+
+    document.getElementById('searchPrevious').addEventListener('click', function(){
+      if(LAST_QUERY == searchTxt.value) {
+        searchPrevious();
+      }
+    });
+
+  }
 
   //========== ZOOM / SCROLL CONTROLLS ==========
 

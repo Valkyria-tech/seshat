@@ -46,7 +46,8 @@ html {
         bottom: 5vh;
         align-items: flex-end;
       }
-      .container .controlls button {
+      .container .controlls button,
+      .container .controlls input {
         padding: 1rem 1.5rem;
         background: transparent;
         border: solid 2px black;
@@ -55,6 +56,9 @@ html {
         text-transform: uppercase;
         transition-duration: .2s;
       }
+        .container .controlls input {
+          cursor: unset;
+        }
         .container .controlls button:hover {
           background: rgba(0, 0, 0, 0.1);
         }
